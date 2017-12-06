@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blog.dao.BlogInfoDao">
+    <!--添加博客-->
+    <insert id="addBlog"  flushCache="true">
+        <selectKey keyProperty="id" resultType="String" order="BEFORE">
+            select CAST(RANDOM()*1000000 ) a from SYSIBM.SYSDUMMY1
+        </selectKey>
+        insert into BlogInfo
+        (id, author, title, context)
+        values
+        (#{id}, #{author}, #{title}, #{context})
+    </insert>
+
+    <update id="editBlog" flushCache="true">
+        update BlogInfo set
+        author = #{author},
+        title = #{title},
+        context = #{context}
+        where id = #{id}
+    </update>
+
+
+    <delete id="delBlogInfo">
+        delete from BlogInfo where id = #{id}
+    </delete>
+
+
+    <!--找出 作者的所有文章  -->
+    <select id="pullBlogsByAuthor" parameterType="String" resultMap="BlogResult">
+        select * from BlogInfo  where author=#{author}
+    </select>
+
+    <!--resultMap 和resultType 是用于处理从数据库查询出来的结果集映射到实体对象，二者不可同时使用 -->
+    <!-- 待查清： resultType 的值是对象本身，还是集合本身？？？ -->
+    <!--通过id 查找博客-->
+    <select id="pullBlogById" parameterType="String" resultMap="BlogInfo">
+        select * from BlogInfo where id=#{id}
+    </select>
+
+    <resultMap type="BolgInfo" id="BlogResult">
+        <id property="id" column="id"/>
+        <result property="author" column="author"/>
+        <result property="title" column="title"/>
+        <result property="context" column="context"/>
+        <association property="address" column="addid" select="com.qbd.mapper.AddressMappers.findbyid">
+        </association>
+        <association property="grade" column="gid" select="com.qbd.mapper.GradeMappers.findbyid">
+        </association>
+    </resultMap>
+</mapper>
