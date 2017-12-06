@@ -70,6 +70,7 @@
         <!-- spring核心包 -->
         <dependency>
             <groupId>org.springframework</groupId>
+
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
         </dependency>
